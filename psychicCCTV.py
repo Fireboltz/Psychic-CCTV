@@ -5,9 +5,12 @@ import cv2
 import os
 from pathlib import Path
 import PySimpleGUIQt as sg
+# import moviepy.editor as mp 
+# from spleeter.separator import Separator
 
-i_vid = r'Enter path to input video'
-o_vid = r'Enter path to output video'
+i_vid = 'Enter path to input video'
+o_vid = 'Enter path to output video'
+o_sound = 'Enter path to output'
 yoloModelPath = Path().parent.absolute()
 yoloModelPath = str(yoloModelPath) + "/yoloModel/"
 sg.ChangeLookAndFeel('LightGrey')
@@ -21,12 +24,12 @@ layout1 = [
 		[sg.OK(size=(100, 30)), sg.Stretch()],
 	]
 
-layout2 = [[sg.Text('Extract Audio from different sources', size=(50,1), font=('Any',18),text_color='#1c86ee' ,justification='left')]]
+layout2 = [[sg.Text('Extract Audio from different sources', size=(50,1), font=('Any',18),text_color='#1c86ee' ,justification='left')],
+           [sg.Text('Path to input video'), sg.In(i_vid,size=(40,1), key='inputSound'), sg.FileBrowse(size=(75, 30))],
+		   [sg.Text('Path to output sound tracks'), sg.In(o_sound,size=(40,1), key='outputSound'), sg.FileSaveAs(size=(75, 30))],
+		   [sg.Button('Extract Sound', size=(100, 30))]]
 
-layout3 = [[sg.Text('View frames captured by YOLO Object Detection', size=(80,1), font=('Any',18),text_color='#1c86ee' ,justification='left')],
-		   [sg.Text('Path to input video'), sg.In(i_vid,size=(40,1), key='input'), sg.FileBrowse(size=(75, 30))],
-		   [sg.Text('Path to output sound tracks'), sg.In(o_vid,size=(40,1), key='output'), sg.FileSaveAs(size=(75, 30))],
-		   ]
+layout3 = [[sg.Text('View frames captured by YOLO Object Detection', size=(80,1), font=('Any',18),text_color='#1c86ee' ,justification='left')]]
 
 layout = [[sg.Column(layout1, key='-COLYOLO-'), sg.Column(layout2, visible=False, key='-COLSound-'), sg.Column(layout3, visible=False, key='-COLYOLO Saved Frames-')],
 		  [sg.Frame(layout=[[sg.Button('YOLO', size=(50, 30)),
@@ -52,6 +55,10 @@ while True:
 
 	if event is None or event =='Exit':
 		exit()
+
+	if event == 'Extract Sound':
+		print("Sed Life")
+		# Add the spleeter thing here
 
 	if event == 'OK':
 		write_to_disk = values['_DISK_']
