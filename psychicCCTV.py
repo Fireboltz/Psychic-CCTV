@@ -8,13 +8,13 @@ import PySimpleGUIQt as sg
 
 i_vid = r'Enter path to input video'
 o_vid = r'Enter path to output video'
-modelPath = Path().parent.absolute()
-modelPath = str(modelPath) + "/model/"
+yoloModelPath = Path().parent.absolute()
+yoloModelPath = str(yoloModelPath) + "/yoloModel/"
 sg.ChangeLookAndFeel('LightGrey')
 layout1 = [
 		[sg.Text('Perform YOLO Object Detection', size=(50,1), font=('Any',18),text_color='#1c86ee' ,justification='left')],
 		[sg.Text('Path to input video'), sg.In(i_vid,size=(40,1), key='input'), sg.FileBrowse(size=(75, 30))],
-		[sg.Text('Optional Path to output video'), sg.In(o_vid,size=(40,1), key='output'), sg.FileSaveAs(size=(75, 30))],
+		[sg.Text('Path to output video'), sg.In(o_vid,size=(40,1), key='output'), sg.FileSaveAs(size=(75, 30))],
 		[sg.Text('Confidence'), sg.Slider(range=(0,10),orientation='h', resolution=1, default_value=5, size=(15,15), key='confidence'), sg.T('  ', key='_CONF_OUT_')],
 		[sg.Text('Threshold'), sg.Slider(range=(0,10), orientation='h', resolution=1, default_value=3, size=(15,15), key='threshold'), sg.T('  ', key='_THRESH_OUT_')],
 		[sg.Text(' '*8), sg.Checkbox('Write output video to disk', key='_DISK_')],
@@ -23,7 +23,10 @@ layout1 = [
 
 layout2 = [[sg.Text('Extract Audio from different sources', size=(50,1), font=('Any',18),text_color='#1c86ee' ,justification='left')]]
 
-layout3 = [[sg.Text('View frames captured by YOLO Object Detection', size=(80,1), font=('Any',18),text_color='#1c86ee' ,justification='left')]]
+layout3 = [[sg.Text('View frames captured by YOLO Object Detection', size=(80,1), font=('Any',18),text_color='#1c86ee' ,justification='left')],
+		   [sg.Text('Path to input video'), sg.In(i_vid,size=(40,1), key='input'), sg.FileBrowse(size=(75, 30))],
+		   [sg.Text('Path to output sound tracks'), sg.In(o_vid,size=(40,1), key='output'), sg.FileSaveAs(size=(75, 30))],
+		   ]
 
 layout = [[sg.Column(layout1, key='-COLYOLO-'), sg.Column(layout2, visible=False, key='-COLSound-'), sg.Column(layout3, visible=False, key='-COLYOLO Saved Frames-')],
 		  [sg.Frame(layout=[[sg.Button('YOLO', size=(50, 30)),
@@ -60,15 +63,15 @@ while True:
 		gui_confidence = args["confidence"]/10
 		gui_threshold = args["threshold"]/10
 
-		labelsPath = os.path.sep.join([modelPath, "model.names"])
+		labelsPath = os.path.sep.join([yoloModelPath, "model.names"])
 		LABELS = open(labelsPath).read().strip().split("\n")
 
 		np.random.seed(42)
 		COLORS = np.random.randint(0, 255, size=(len(LABELS), 3),
 			dtype="uint8")
 
-		weightsPath = os.path.sep.join([modelPath, "yolov3.weights"])
-		configPath = os.path.sep.join([modelPath, "yolov3.cfg"])
+		weightsPath = os.path.sep.join([yoloModelPath, "yolov3.weights"])
+		configPath = os.path.sep.join([yoloModelPath, "yolov3.cfg"])
 
 		print("[INFO] loading YOLO from disk...")
 		net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
