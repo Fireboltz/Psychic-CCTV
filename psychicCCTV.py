@@ -5,6 +5,7 @@ import cv2
 import os
 from pathlib import Path
 import PySimpleGUIQt as sg
+import gallery
 # import moviepy.editor as mp 
 # from spleeter.separator import Separator
 
@@ -29,9 +30,7 @@ layout2 = [[sg.Text('Extract Audio from different sources', size=(50,1), font=('
 		   [sg.Text('Path to output sound tracks'), sg.In(o_sound,size=(40,1), key='outputSound'), sg.FileSaveAs(size=(75, 30))],
 		   [sg.Button('Extract Sound', size=(100, 30))]]
 
-layout3 = [[sg.Text('View frames captured by YOLO Object Detection', size=(80,1), font=('Any',18),text_color='#1c86ee' ,justification='left')]]
-
-layout = [[sg.Column(layout1, key='-COLYOLO-'), sg.Column(layout2, visible=False, key='-COLSound-'), sg.Column(layout3, visible=False, key='-COLYOLO Saved Frames-')],
+layout = [[sg.Column(layout1, key='-COLYOLO-'), sg.Column(layout2, visible=False, key='-COLSound-')],
 		  [sg.Frame(layout=[[sg.Button('YOLO', size=(50, 30)),
 		   sg.Button('Sound', size=(60, 30)), 
 		   sg.Button('YOLO Saved Frames', size=(200, 30)), 
@@ -48,10 +47,14 @@ layoutVis = 'YOLO'
 while True:
 	event, values = win.Read()
 
-	if event in 'YOLO Saved Frames Sound':
+	if event in 'YOLO Sound':
 		win[f'-COL{layoutVis}-'].update(visible=False)
 		layoutVis = event
 		win[f'-COL{layoutVis}-'].update(visible=True)
+
+	if event == 'YOLO Saved Frames':
+		win.Close()
+		gallery.displayImages()
 
 	if event is None or event =='Exit':
 		exit()
@@ -65,7 +68,6 @@ while True:
 		args = values
 
 		win.Close()
-
 
 		gui_confidence = args["confidence"]/10
 		gui_threshold = args["threshold"]/10
