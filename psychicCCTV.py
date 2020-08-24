@@ -7,8 +7,8 @@ from pathlib import Path
 import PySimpleGUIQt as sg
 import gallery
 import copy
-# import moviepy.editor as mp 
-# from spleeter.separator import Separator
+import moviepy.editor as mp 
+from spleeter.separator import Separator
 
 i_vid = 'Enter path to input video'
 o_vid = 'Enter path to output video'
@@ -63,6 +63,15 @@ while True:
 	if event == 'Extract Sound':
 		print("Sed Life")
 		# Add the spleeter thing here
+		# Yeah done 
+		clip = mp.VideoFileClip(values["inputSound"])
+		outputs = os.getcwd() + '/inference/' +'sounds/'  
+		print(outputs)
+		clip.audio.write_audiofile(r"sound.mp3") 
+		separator = Separator('spleeter:5stems')
+		sounds_file = os.getcwd() + '/sound.mp3'
+		print(sounds_file)
+		separator.separate_to_file(sounds_file, 'output')
 
 	if event == 'OK':
 		write_to_disk = values['_DISK_']
