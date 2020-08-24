@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import PySimpleGUIQt as sg
 import gallery
+import copy
 # import moviepy.editor as mp 
 # from spleeter.separator import Separator
 
@@ -103,17 +104,18 @@ while True:
 			total = -1
 
 		win_started = False
+		Frame_number = 0
 
 		while True:
 			grabbed, frame = vs.read()
-
+			format_frame = [copy.deepcopy(frame),copy.deepcopy(frame)]
 			if not grabbed:
 				break
 
 			if W is None or H is None:
-				(H, W) = frame.shape[:2]
+				(H, W) = format_frame[0].shape[:2]
 
-			blob = cv2.dnn.blobFromImage(frame, 1 / 255.0, (416, 416),
+			blob = cv2.dnn.blobFromImage(format_frame[0], 1 / 255.0, (416, 416),
 				swapRB=True, crop=False)
 			net.setInput(blob)
 			start = time.time()
@@ -144,21 +146,28 @@ while True:
 			idxs = cv2.dnn.NMSBoxes(boxes, confidences, gui_confidence, gui_threshold)
 
 			if len(idxs) > 0:
+				count = 0
 				for i in idxs.flatten():
+					format_frame[1] = copy.deepcopy(frame)
 					(x, y) = (boxes[i][0], boxes[i][1])
 					(w, h) = (boxes[i][2], boxes[i][3])
 
 					color = [int(c) for c in COLORS[classIDs[i]]]
-					cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
-					text = "{}: {:.4f}".format(LABELS[classIDs[i]],
-						confidences[i])
-					cv2.putText(frame, text, (x, y - 5),
-						cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+					for g in range(len(format_frame)):
+						cv2.rectangle(format_frame[g], (x, y), (x + w, y + h), color, 2)
+						text = "{}: {:.4f}".format(LABELS[classIDs[i]],
+							confidences[i])
+						cv2.putText(format_frame[g], text, (x, y - 5),
+							cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+						outputer = os.getcwd() + '/inference/Objects/' + LABELS[classIDs[i]] \
+									+ str(Frame_number) +'_' + str(count) + '.jpg'
+						cv2.imwrite(outputer,format_frame[1])
+					count += 1
 			if write_to_disk:
 				if writer is None:
 					fourcc = cv2.VideoWriter_fourcc(*"MJPG")
 					writer = cv2.VideoWriter(args["output"], fourcc, 30,
-						(frame.shape[1], frame.shape[0]), True)
+						(format_frame[0].shape[1], format_frame[0].shape[0]), True)
 
 					if total > 0:
 						elap = (end - start)
@@ -166,8 +175,8 @@ while True:
 						print("[INFO] estimated total time to finish: {:.4f}".format(
 							elap * total))
 
-				writer.write(frame)
-			imgbytes = cv2.imencode('.png', frame)[1].tobytes()  
+				writer.write(format_frame[0])
+			imgbytes = cv2.imencode('.png', format_frame[0])[1].tobytes()  
 
 			if not win_started:
 				win_started = True
@@ -193,6 +202,9 @@ while True:
 				break
 			gui_confidence = values['confidence']/10
 			gui_threshold = values['threshold']/10
+			
+			print(Frame_number)
+			Frame_number += 1
 
 
 win.Close()
