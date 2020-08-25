@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import PySimpleGUIQt as sg
 import gallery
+import media_player
 import copy
 import moviepy.editor as mp 
 from spleeter.separator import Separator
@@ -72,6 +73,7 @@ while True:
 		sounds_file = os.getcwd() + '/sound.mp3'
 		print(sounds_file)
 		separator.separate_to_file(sounds_file, 'output')
+		media_player.MediaPlayerGUI()
 
 	if event == 'OK':
 		write_to_disk = values['_DISK_']
