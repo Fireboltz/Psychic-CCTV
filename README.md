@@ -135,6 +135,14 @@ Screenshots of the application:
 |---|---|
 | Sound Extraction  | Frames with objects of interest displayed along with the option to perform super resolution  |
 
+## Running the Project
+
+To run the project, just execute the psychichCCTY.py script. Rest of the files were the ones used to do the intial groundwork of training models and getting them ready by testing them. 
+
+```
+python psychichCCTV.py
+```
+
 ## Project Creators: :mortar_board:
 
 [Vishwaak Chandaran](https://github.com/Vishwaak)
