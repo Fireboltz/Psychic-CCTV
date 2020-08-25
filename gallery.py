@@ -1,7 +1,30 @@
 import PySimpleGUIQt as sg
 import os
-from PIL import Image, ImageTk
-import io                        
+import io    
+import torch
+from utils import *
+from PIL import Image, ImageDraw, ImageFont, ImageTk
+import cv2
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")                    
+
+def super_res(img, count):
+    hr_img = Image.open(img, mode="r")
+    hr_img = hr_img.convert('RGB')
+
+    ## SRGAN
+    srgan_checkpoint = "superResModel/checkpoint_srgan.pth.tar"
+    srgan_generator = torch.load(srgan_checkpoint,map_location=device)['generator']
+
+    sr_img_srgan = srgan_generator(convert_image(hr_img, source='pil', target='imagenet-norm').unsqueeze(0).to(device))
+    sr_img_srgan = sr_img_srgan.squeeze(0).cpu().detach()
+    sr_img_srgan = convert_image(sr_img_srgan, source='[-1, 1]', target='pil')
+
+    savePath = "inference/superRes/" + str(count) + ".jpg" 
+    sr_img_srgan.save(savePath)
+    sr_img_srgan.show()
+    print("DONE")
+
 
 def displayImages():
     sg.ChangeLookAndFeel('LightGrey')
@@ -40,6 +63,7 @@ def displayImages():
     col_files = [[sg.Text('List of images')],
                 [sg.Listbox(values=fnames, change_submits=True, size=(60, 10), key='listbox')],
                 [sg.Button('Next', size=(8, 1)), sg.Button('Prev', size=(8, 1)), file_num_display_elem],
+                [sg.Button('Enhance Resolution', size=(16, 1))],
                 [sg.Button('Exit', size=(8, 1))]]
 
     layoutSavedImages = [[sg.Column(col_files), sg.Column(col)]]
@@ -49,6 +73,7 @@ def displayImages():
 
 
     i = 0
+    im = 0
     while True:
         event, values = window.read()
         print(event, values)
@@ -68,7 +93,12 @@ def displayImages():
         elif event == 'listbox':            
             f = values["listbox"][0]            
             filename = os.path.join(folder, f)  
-            i = fnames.index(f)                 
+            i = fnames.index(f)  
+        elif event == 'Enhance Resolution':
+            filename = os.path.join(folder, fnames[i])
+            super_res(filename, im)
+            im += 1
+            print(filename)
         else:
             filename = os.path.join(folder, fnames[i])
 
