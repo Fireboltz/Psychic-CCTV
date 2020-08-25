@@ -16,6 +16,7 @@ o_sound = 'Enter path to output'
 yoloModelPath = Path().parent.absolute()
 yoloModelPath = str(yoloModelPath) + "/yoloModel/"
 sg.ChangeLookAndFeel('LightGrey')
+
 layout1 = [
 		[sg.Text('Perform YOLO Object Detection', size=(50,1), font=('Any',18),text_color='#1c86ee' ,justification='left')],
 		[sg.Text('Path to input video'), sg.In(i_vid,size=(40,1), key='input'), sg.FileBrowse(size=(75, 30))],
