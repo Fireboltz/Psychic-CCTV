@@ -20,7 +20,7 @@ And that idea, led to us building Psychic CCTY, a tool to make use of videos fro
 Psychich CCTV will help you analyse a video using the following methods:
 
 - You have a video(even a low resolution one), and you're sure you might find some object of interest in the video, but you're too busy to sit and watch the entire
-video. Even if you sit and watch the video, you might skip something by mistake, becuase after all, you're human. So we have provided an option to perform object detection
+video. Even if you sit and watch the video, you might skip something by mistake, because after all, you're human. So we have provided an option to perform object detection
 on the entire video, in real time which stores all frames with objects of interest. 
 
 - Now, you did get an object of interest, but since you're not a computer, you still feel it could have a higher resolution. So used those saved frames and increase their 
