@@ -137,7 +137,9 @@ Screenshots of the application:
 
 ## Running the Project
 
-To run the project, just execute the psychichCCTY.py script. Rest of the files were the ones used to do the intial groundwork of training models and getting them ready by testing them. 
+To run the project,
+1. Download yolo weights from s3://psychic-cctv/yolov3.weights into yoloModel/ 
+2. just execute the psychichCCTY.py script. Rest of the files were the ones used to do the intial groundwork of training models and getting them ready by testing them. 
 
 ```
 python psychichCCTV.py
